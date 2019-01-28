@@ -79,6 +79,8 @@ namespace debugws3
       int[] numbersToBeCalculated = Array.ConvertAll(numArray, int.Parse);
       char[] operations = Array.ConvertAll(opArray, char.Parse);
 
+      ArrangeNumber(ref numbersToBeCalculated,ref operations);
+
       //Checking if math operators are equal or more than the numbers to be calculated
       if (operations.Length >= numbersToBeCalculated.Length)
       {
@@ -87,6 +89,7 @@ namespace debugws3
 
       double result = numbersToBeCalculated[0];
 
+      
       var j = 0;
       for (var i = 1; i < numbersToBeCalculated.Length; i++)
       {
@@ -102,16 +105,6 @@ namespace debugws3
               result -= numbersToBeCalculated[i];
               break;
             }
-          case '*':
-            {
-              result *= numbersToBeCalculated[i];
-              break;
-            }
-          case '/':
-            {
-              result /= numbersToBeCalculated[i];
-              break;
-            }
           default:
             break;
         }
@@ -119,6 +112,66 @@ namespace debugws3
       }
 
       return new Result(result, "");
+    }
+
+    public static void ArrangeNumber(ref int[] numbers,ref char[] operators){
+        //Find number belonging to operator from 0 - sizeof(operators)
+        for(int i = 0; i < operators.Length;i++){
+          //Find where '/' && '*' is
+          int finalVal = -1;
+          switch (operators[i]){
+            case '/':
+             finalVal = (numbers[i]/numbers[(i+1)]);
+              numbers = resizeArray(finalVal,i,numbers);
+              operators = removeOperator(operators,i);
+            break;
+            case '*':
+             finalVal = (numbers[i]*numbers[(i+1)]);
+              numbers = resizeArray(finalVal,i,numbers);
+              operators = removeOperator(operators,i);
+              break;
+
+          }
+          
+        }
+    }
+
+    public static char[] removeOperator(char[] op,int pos){
+      char[] newC = new char[op.Length-1];
+      int onH = 0;
+      for(int i = 0; i < op.Length-1;i++){
+        if(i == pos){
+          i++;
+          newC[onH] = op[i];
+          onH++;
+        }
+        else{
+          newC[onH] = op[i];
+          onH++;
+        }
+      }
+
+      return newC;
+    }
+    public static int[] resizeArray(int newVal,int pos,int[] arr){
+      int[] newArr = new int[(arr.Length-1)];
+
+      int oneB = 0;
+      for(int i = 0; i < arr.Length;i++){
+          if(i == pos){
+            newArr[i] = newVal;
+            i++;
+          }
+          else{
+            if(oneB == pos){
+              oneB++;
+            }
+            newArr[oneB] = arr[i];
+            oneB++;
+          }
+      }
+      
+      return newArr;
     }
 
     public static void ExitAndThankYouMessage()
